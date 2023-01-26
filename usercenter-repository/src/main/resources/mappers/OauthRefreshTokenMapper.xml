@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.upuphone.cloudplatform.usercenter.mybatis.mapper.OauthRefreshTokenMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap"
+        type="com.upuphone.cloudplatform.usercenter.mybatis.entity.OauthRefreshTokenPo">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="app_id" property="appId" />
+        <result column="authentication_id" property="authenticationId" />
+        <result column="authentication" property="authentication" />
+        <result column="refresh_token" property="refreshToken" />
+        <result column="del_flag" property="delFlag" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , user_id, app_id, authentication_id, authentication, refresh_token, del_flag, create_time, update_time
+    </sql>
+
+    <select id="getByAccessToken" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT r.id,
+               r.user_id,
+               r.app_id,
+               r.authentication_id,
+               r.authentication,
+               r.refresh_token
+        FROM oauth_refresh_token r
+                 INNER JOIN oauth_access_token a
+                            ON a.refresh_token_id = r.refresh_token
+        WHERE a.del_flag = 0
+          AND r.del_flag = 0
+    </select>
+
+    <select id="getValidTokens" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT id, device_id, model, device_type, device_name, create_time
+        FROM oauth_refresh_token
+        WHERE user_id = #{userId}
+          AND del_flag = 0
+          AND expire_time > now()
+    </select>
+
+    <select id="getByUserIdAndDevice" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM oauth_refresh_token
+        WHERE user_id = #{userId, jdbcType = BIGINT}
+        <if test="deviceId != null and deviceId != ''">
+            AND device_id = #{deviceId, jdbcType = VARCHAR}
+        </if>
+    </select>
+
+    <select id="getAllDevicesByUserId"
+        resultType="com.upuphone.cloudplatform.usercenter.mybatis.entity.OauthRefreshTokenPo"
+        parameterType="java.lang.Long">
+        SELECT device_id, model, device_name, device_type, create_time, del_flag, expire_time
+        FROM oauth_refresh_token
+        WHERE user_id = #{userId}
+        ORDER BY expire_time DESC
+    </select>
+
+    <select id="getByRefreshIdsIncludeDeleted"
+        resultType="com.upuphone.cloudplatform.usercenter.mybatis.entity.OauthRefreshTokenPo">
+        SELECT id, app_id, expire_time
+        FROM oauth_refresh_token
+        WHERE
+        <if test="ids != null and ids.size() > 0">
+            id IN
+            <foreach collection="ids" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+</mapper>

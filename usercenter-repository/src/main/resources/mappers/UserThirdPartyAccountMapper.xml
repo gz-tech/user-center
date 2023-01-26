@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+    namespace="com.upuphone.cloudplatform.usercenter.mybatis.mapper.UserThirdPartyAccountMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap"
+        type="com.upuphone.cloudplatform.usercenter.mybatis.entity.UserThirdPartyAccountPo">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="unique_id" property="uniqueId" />
+        <result column="type" property="type" />
+        <result column="del_flag" property="delFlag" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+    <select id="selectByPhoneNumberAndType" resultMap="BaseResultMap">
+        select third.unique_id from user_third_party_account third
+        inner join user_base_info userinfo on third.user_id = userinfo.id
+        where userinfo.phone_number = #{phoneNumber, jdbcType=VARCHAR}
+        and third.type = #{type, jdbcType=INTEGER}
+        and third.del_flag = 0 and userinfo.del_flag = 0
+    </select>
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.upuphone.cloudplatform.usercenter.mybatis.mapper.OauthClientDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap"
+        type="com.upuphone.cloudplatform.usercenter.mybatis.entity.OauthClientDetailPo">
+        <id column="id" property="id" />
+        <result column="app_id" property="appId" />
+        <result column="client_secret" property="clientSecret" />
+        <result column="authorized_grant_types" property="authorizedGrantTypes" />
+        <result column="web_server_redirect_uri" property="webServerRedirectUri" />
+        <result column="access_token_validity" property="accessTokenValidity" />
+        <result column="refresh_token_validity" property="refreshTokenValidity" />
+        <result column="code_validity" property="codeValidity" />
+        <result column="autoapprove" property="autoApprove" />
+        <result column="del_flag" property="delFlag" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        , app_id, client_secret, authorized_grant_types, web_server_redirect_uri, access_token_validity, refresh_token_validity,
+        code_validity, autoapprove, del_flag, create_time, update_time
+    </sql>
+
+    <select id="getByClientId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM oauth_client_detail
+        WHERE
+        app_id = #{appId, jdbcType=VARCHAR}
+        AND del_flag = 0
+    </select>
+
+</mapper>

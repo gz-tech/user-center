@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.upuphone.cloudplatform.usercenter.mybatis.mapper.UserBaseInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap"
+        type="com.upuphone.cloudplatform.usercenter.mybatis.entity.UserBaseInfoPo">
+        <id column="id" property="id" />
+        <result column="boxing_id" property="boxingId" />
+        <result column="user_name" property="userName" />
+        <result column="password" property="password" />
+        <result column="phone_code" property="phoneCode" />
+        <result column="phone_number" property="phoneNumber" />
+        <result column="security_phone_code" property="securityPhoneCode" />
+        <result column="security_phone_number" property="securityPhoneNumber" />
+        <result column="gender" property="gender" />
+        <result column="country_code" property="countryCode" />
+        <result column="country_name" property="countryName" />
+        <result column="photo_url" property="photoUrl" />
+        <result column="del_flag" property="delFlag" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        ,boxing_id, user_name, password, phone_code,phone_number,security_phone_code, security_phone_number, gender, country_code, country_name,photo_url, del_flag, create_time, update_time
+    </sql>
+
+    <select id="getByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM user_base_info
+        WHERE
+        boxing_id = #{userName, jdbcType=VARCHAR}
+    </select>
+
+    <select id="getByPhoneNumber" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM user_base_info
+        WHERE
+        phone_number = #{phoneNumber, jdbcType=VARCHAR}
+    </select>
+
+    <select id="getByIdForUpdate" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM user_base_info
+        WHERE
+        id = #{userId,jdbcType=BIGINT} FOR UPDATE
+    </select>
+
+    <select id="getByBoxingIdForUpdate" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM user_base_info
+        WHERE
+        boxing_id = #{boxingId,jdbcType=VARCHAR}
+        AND del_flag = 0
+        FOR UPDATE
+    </select>
+
+</mapper>

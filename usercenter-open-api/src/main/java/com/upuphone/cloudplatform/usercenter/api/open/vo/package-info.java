@@ -1,0 +1,1 @@
+package com.upuphone.cloudplatform.usercenter.api.open.vo;
